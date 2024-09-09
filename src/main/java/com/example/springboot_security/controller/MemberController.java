@@ -1,11 +1,15 @@
 package com.example.springboot_security.controller;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.example.springboot_security.dao.MemberDao;
 import com.example.springboot_security.model.Member;
@@ -41,10 +45,17 @@ public class MemberController {
         return "welcom";
     }
     
-
+    // 取得使用者資料
     @GetMapping("/hello")
-    public String hello() {
-        return "hello";
+    public String hello(Authentication authentication) {
+
+        // 取得使用者名稱
+        String username = authentication.getName();
+
+        // 取得使用者權限
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        return "hello " + username + " " + authorities;
     }
 
 }

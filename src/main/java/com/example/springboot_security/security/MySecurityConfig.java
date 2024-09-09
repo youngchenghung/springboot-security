@@ -9,6 +9,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.Customizer;
@@ -21,7 +22,11 @@ public class MySecurityConfig {
     // 設定密碼加密方式
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        // 密碼布進行加密方法(NoOpPasswordEncoder)
+        //return NoOpPasswordEncoder.getInstance();
+
+        // 使用 BCryptPasswordEncoder 進行密碼加密
+        return new BCryptPasswordEncoder();
     }
 
     // @Bean

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.springboot_security.dao.MemberDao;
 import com.example.springboot_security.model.Member;
+import com.example.springboot_security.model.Role;
 
 @Component
 public class MyUserDetailsService  implements UserDetailsService {
@@ -38,12 +40,23 @@ public class MyUserDetailsService  implements UserDetailsService {
                 String memberPassword = member.getPassword();
                 
                 // 權限列表
-                List<GrantedAuthority> authorities = new ArrayList<>();
+                List<Role> roleList = memberDao.getRolesByMemberId(member.getMemberId());
 
+                List<GrantedAuthority> authorities = convertToAuthorities(roleList);
+                
                 // 返回使用者資料, Spring Security 指定的 User 格式
                 return new User(memberEmail, memberPassword, authorities);
             }
 
         }
 
+        private List<GrantedAuthority> convertToAuthorities(List<Role> roleList) {
+            List<GrantedAuthority> authorities = new ArrayList<>();
+
+            for (Role role : roleList) {
+                authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+            }
+
+            return authorities;
+        }
 }

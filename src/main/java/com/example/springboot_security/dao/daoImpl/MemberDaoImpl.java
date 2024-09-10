@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.example.springboot_security.dao.MemberDao;
 import com.example.springboot_security.model.Member;
+import com.example.springboot_security.model.Role;
 import com.example.springboot_security.rowmapper.MemberRowMapper;
+import com.example.springboot_security.rowmapper.RoleRowMapper;
 
 @Component
 public class MemberDaoImpl implements MemberDao{
@@ -23,6 +25,9 @@ public class MemberDaoImpl implements MemberDao{
 
     @Autowired
     private MemberRowMapper memberRowMapper;
+
+    @Autowired
+    private RoleRowMapper roleRowMapper;
 
     // 透過 memberId 取得資料庫會員資料
     @Override
@@ -84,4 +89,19 @@ public class MemberDaoImpl implements MemberDao{
 
     }
     
+    @Override
+    public List<Role> getRolesByMemberId(Integer memberId) {
+        String sql = """
+                        SELECT role.role_id, role_name FROM role 
+                        JOIN member_has_role ON role.role_id = member_has_role.role_id 
+                        WHERE member_has_role.member_id = :memberId
+                        """;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberId", memberId);
+
+        List<Role> roleList = namedParameterJdbcTemplate.query(sql, map, roleRowMapper);
+
+        return roleList;
+    }
 }

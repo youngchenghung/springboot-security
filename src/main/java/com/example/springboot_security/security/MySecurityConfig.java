@@ -62,7 +62,7 @@ public class MySecurityConfig {
 
             .authorizeRequests(request -> request
                 .requestMatchers("/register", "/welcom").permitAll()
-                .requestMatchers(HttpMethod.GET, "/hello/**").authenticated()
+                .requestMatchers("/hello").hasRole("ADMIN")
                 .anyRequest().denyAll()
             )
             .build();

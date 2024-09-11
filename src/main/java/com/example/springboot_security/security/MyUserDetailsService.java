@@ -39,9 +39,9 @@ public class MyUserDetailsService  implements UserDetailsService {
                 String memberEmail = member.getEmail();
                 String memberPassword = member.getPassword();
                 
-                // 權限列表
+                // 權限列表 (Role)
                 List<Role> roleList = memberDao.getRolesByMemberId(member.getMemberId());
-
+                
                 List<GrantedAuthority> authorities = convertToAuthorities(roleList);
                 
                 // 返回使用者資料, Spring Security 指定的 User 格式
@@ -50,9 +50,13 @@ public class MyUserDetailsService  implements UserDetailsService {
 
         }
 
+        // 將 Role 轉換為 Spring Security 指定的 GrantedAuthority 格式
         private List<GrantedAuthority> convertToAuthorities(List<Role> roleList) {
+
+            // 權限列表
             List<GrantedAuthority> authorities = new ArrayList<>();
 
+            // 將 Role 轉換為 GrantedAuthority
             for (Role role : roleList) {
                 authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
             }

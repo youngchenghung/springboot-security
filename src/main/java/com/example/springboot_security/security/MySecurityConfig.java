@@ -2,21 +2,17 @@ package com.example.springboot_security.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.Customizer;
 
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class MySecurityConfig {
 
     // 設定密碼加密方式
@@ -65,6 +61,10 @@ public class MySecurityConfig {
                 .requestMatchers("/hello").hasRole("ADMIN")
                 .anyRequest().denyAll()
             )
+
+            .addFilterBefore(new MyFilter1(), BasicAuthenticationFilter.class)
+            .addFilterBefore(new MyFilter2(), MyFilter1.class)
+            
             .build();
     }
 }
